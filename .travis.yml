@@ -1,5 +1,28 @@
+
+sudo: required
 language: java
+
 jdk:
   - oraclejdk8
 
 
+
+
+script:
+  - mvn clean cobertura:cobertura -Dtest=ServletTest#testExternalStaticFile -DfailIfNoTests=false
+
+before_deploy:
+- tar -zcvf coverage-result.tar.gz /home/travis/build/leusonmario/spark/target/site/cobertura
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "Zh9ZsqcVB0jGvgDdafDlx2QTnOd/U2Uki+zptYOpd+Ubtg3dkjBgAAS05JGKB15cO7S0W3oMEWjHEIs9DtkTstXXatogTmAemWBkqzpEjRAZT0yd1VOViTWdPDi3tvzhrebkM2rO0eoFtQ3pSUodSTR29hGxNGaICb6tppMP0kgXAR/RPcVU+BOLgIHghRu5NMaWRdI98LYv01AhtNzMO6cmtzIgvGk9zqu3zeEOdpmLiNYIn3sy7cA/hR0AAQBgezsjNdzXkpQZPLTaVDJcvwUSylN4l/TgGFIwdE4ExDizxCL/NZ35BNtcGj0SaNyy1jis9BLwD/EDmoWHa0tKSvJf92BNm8Ut/+h/yQR8fY9HW9wGrN/Bu/+PwE5aXAIB4a1IaKXjS2kLsukdLYRdTkh0qxgHo4mycdJUTne9f0M9GyfuvvgkR9agf6TWA52wRbgevZtL5VKMq14DymjElNgtinOoww8YnfrFEWAq4ju8mM97NxhTL7jiLp+ub6qcgIGwxhcnjDJNJDClzTiV5aeFcBAW+BSAEftXuXBZ1KutbvhVXPFEsjWmUupBjzNnFerFmMkdvF9wR5zfoMLEAPD/QpMAnWYeC+nxNLyJ1dbGS/OYT4WQWPC2H4b1I4XLGiwviVCNhv2jnHkSIddRB6K9GrRXgwHzwabrfl7S/fo="
+
+
+  file: coverage-result.tar.gz
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    tags: true
